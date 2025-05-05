@@ -8,6 +8,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import util.Session;
+
+import java.io.IOException;
 
 public class AdminPanelController {
 
@@ -56,6 +59,18 @@ public class AdminPanelController {
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void handleLogout(javafx.event.ActionEvent event) {
+        Session.setCurrentUser(null);
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
+            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
