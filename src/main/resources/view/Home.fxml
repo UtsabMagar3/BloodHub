@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.HomeController">
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #ffffff; -fx-padding: 10;">
+            <Label text="BLOODHUB" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Notifications" onAction="#handleNotifications" style="-fx-padding: 5 10; -fx-font-size: 14px;"/>
+            <Button text="Profile" onAction="#handleProfile" style="-fx-padding: 5 10; -fx-font-size: 14px;"/>
+            <Button text="Logout" onAction="#handleLogout" style="-fx-padding: 5 10; -fx-font-size: 14px;"/>
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="30" style="-fx-background-color: #f0f0f0; -fx-padding: 50;">
+            <ImageView fitWidth="600" preserveRatio="true">
+                <Image url="@../assets/banner.png"/>
+            </ImageView>
+
+            <Label text="Donate Blood, Save Lives" style="-fx-font-size: 24px; -fx-text-fill: #333333;" />
+            <HBox spacing="20" alignment="CENTER">
+                <!-- Donate Blood Section -->
+                <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;">
+                    <ImageView fitWidth="50" fitHeight="50">
+                        <Image url="@../assets/donate.png"/>
+                    </ImageView>
+                    <Label text="Donate Blood" style="-fx-font-size: 14px; -fx-text-fill: #333333;"/>
+                    <Button text="Donate Now" style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-padding: 5 10; -fx-border-radius: 5; -fx-border-color: #cccccc;" onAction="#handleDonateBlood"/>
+                </VBox>
+
+                <!-- Request Blood Section -->
+                <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;">
+                    <ImageView fitWidth="50" fitHeight="50">
+                        <Image url="@../assets/request.png"/>
+                    </ImageView>
+                    <Label text="Request Blood" style="-fx-font-size: 14px; -fx-text-fill: #333333;"/>
+                    <Button text="Request Now" style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-padding: 5 10; -fx-border-radius: 5; -fx-border-color: #cccccc;" onAction="#handleRequestBlood"/>
+                </VBox>
+
+                <!-- Check Inventory Section -->
+                <VBox alignment="CENTER" spacing="10" style="-fx-background-color: #ffffff; -fx-padding: 20; -fx-border-color: #cccccc; -fx-border-radius: 8; -fx-background-radius: 8;">
+                    <ImageView fitWidth="50" fitHeight="50">
+                        <Image url="@../assets/inventory.png"/>
+                    </ImageView>
+                    <Label text="Check Inventory" style="-fx-font-size: 14px; -fx-text-fill: #333333;"/>
+                    <Button text="View Inventory" style="-fx-background-color: #f0f0f0; -fx-text-fill: #333333; -fx-font-size: 14px; -fx-padding: 5 10; -fx-border-radius: 5; -fx-border-color: #cccccc;" onAction="#handleInventory"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

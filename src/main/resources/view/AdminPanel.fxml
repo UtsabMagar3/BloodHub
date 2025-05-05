@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AdminPanelController">
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #ffffff; -fx-padding: 10;">
+            <Label text="Admin Panel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#handleLogout" style="-fx-padding: 5 10; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
+        </HBox>
+    </top>
+    <center>
+        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 50;">
+            <Button text="Manage Users" onAction="#handleManageUsers" style="-fx-padding: 10 20; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
+            <Button text="View Donations" onAction="#handleViewDonations" style="-fx-padding: 10 20; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
+            <Button text="View Requests" onAction="#handleViewRequests" style="-fx-padding: 10 20; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
+        </VBox>
+    </center>
+</BorderPane>
