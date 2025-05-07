@@ -1,21 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="controller.AdminPanelController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.AdminPanelController"
+            prefWidth="1000" prefHeight="700"
+            style="-fx-background-color: #f8f9fa;">
+
+    <!-- Professional Header Bar -->
     <top>
-        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #ffffff; -fx-padding: 10;">
-            <Label text="Admin Panel" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;" />
+        <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: linear-gradient(to right, #b30000, #990000); -fx-padding: 15 25;">
+            <Label text="BloodHub" style="-fx-font-size: 28px; -fx-font-family: 'Segoe UI Semibold', Arial; -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 0,0,0,1);">
+                <font>
+                    <Font name="Segoe UI Semibold" size="28" />
+                </font>
+            </Label>
+            <Label text="Admin Panel" style="-fx-font-size: 24px; -fx-font-family: 'Segoe UI Light', Arial; -fx-text-fill: rgba(255,255,255,0.9);"/>
             <Pane HBox.hgrow="ALWAYS"/>
-            <Button text="Logout" onAction="#handleLogout" style="-fx-padding: 5 10; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
+            <Button text="LOGOUT" onAction="#handleLogout"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-family: 'Segoe UI Semibold'; -fx-border-color: white; -fx-border-radius: 4; -fx-border-width: 1; -fx-cursor: hand; -fx-padding: 6 18;"/>
         </HBox>
     </top>
+
+    <!-- Main Content Area -->
     <center>
-        <VBox alignment="CENTER" spacing="20" style="-fx-padding: 50;">
-            <Button text="Manage Users" onAction="#handleManageUsers" style="-fx-padding: 10 20; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
-            <Button text="View Donations" onAction="#handleViewDonations" style="-fx-padding: 10 20; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
-            <Button text="View Requests" onAction="#handleViewRequests" style="-fx-padding: 10 20; -fx-font-size: 14px; -fx-background-color: #f0f0f0; -fx-border-radius: 5; -fx-border-color: #cccccc; -fx-cursor: hand;" />
+        <VBox spacing="40" alignment="TOP_CENTER" style="-fx-padding: 40 40 60 40;">
+
+            <!-- Metrics Dashboard -->
+            <GridPane hgap="40" vgap="25" alignment="CENTER">
+                <columnConstraints>
+                    <ColumnConstraints halignment="CENTER" prefWidth="250"/>
+                    <ColumnConstraints halignment="CENTER" prefWidth="250"/>
+                </columnConstraints>
+
+                <!-- Metric Cards -->
+                <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.5, 0, 2);">
+                    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 25;">
+                        <Label fx:id="totalUsersLabel" text="0" style="-fx-font-size: 36px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: #b30000;"/>
+                        <Label text="REGISTERED USERS" style="-fx-font-size: 13px; -fx-font-family: 'Segoe UI'; -fx-text-fill: #666; -fx-opacity: 0.9;"/>
+                    </VBox>
+                </StackPane>
+
+                <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.5, 0, 2);" GridPane.columnIndex="1">
+                    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 25;">
+                        <Label fx:id="totalDonationsLabel" text="0" style="-fx-font-size: 36px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: #b30000;"/>
+                        <Label text="TOTAL DONATIONS" style="-fx-font-size: 13px; -fx-font-family: 'Segoe UI'; -fx-text-fill: #666; -fx-opacity: 0.9;"/>
+                    </VBox>
+                </StackPane>
+
+                <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.5, 0, 2);" GridPane.rowIndex="1">
+                    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 25;">
+                        <Label fx:id="totalRequestsLabel" text="0" style="-fx-font-size: 36px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: #b30000;"/>
+                        <Label text="BLOOD REQUESTS" style="-fx-font-size: 13px; -fx-font-family: 'Segoe UI'; -fx-text-fill: #666; -fx-opacity: 0.9;"/>
+                    </VBox>
+                </StackPane>
+
+                <StackPane style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.5, 0, 2);" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                    <VBox alignment="CENTER" spacing="8" style="-fx-padding: 25;">
+                        <Label fx:id="inventoryLabel" text="0" style="-fx-font-size: 36px; -fx-font-family: 'Segoe UI Semibold'; -fx-text-fill: #b30000;"/>
+                        <Label text="INVENTORY UNITS" style="-fx-font-size: 13px; -fx-font-family: 'Segoe UI'; -fx-text-fill: #666; -fx-opacity: 0.9;"/>
+                    </VBox>
+                </StackPane>
+            </GridPane>
+
+            <!-- Action Buttons (Activity Logs removed) -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="MANAGE USERS" onAction="#handleManageUsers"
+                        style="-fx-pref-width: 180; -fx-pref-height: 50; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: #b30000; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+                <Button text="VIEW DONATIONS" onAction="#handleViewDonations"
+                        style="-fx-pref-width: 180; -fx-pref-height: 50; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: #b30000; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+                <Button text="VIEW REQUESTS" onAction="#handleViewRequests"
+                        style="-fx-pref-width: 180; -fx-pref-height: 50; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: #b30000; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+                <Button text="VIEW INVENTORY" onAction="#handleViewInventory"
+                        style="-fx-pref-width: 180; -fx-pref-height: 50; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: #b30000; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"/>
+            </HBox>
         </VBox>
     </center>
 </BorderPane>
