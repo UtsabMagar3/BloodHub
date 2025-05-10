@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+
+<?import java.lang.String?>
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.DonateBloodController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Label text="Donate Blood" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+
+    <GridPane vgap="10" hgap="10">
+        <Label text="Blood Group:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="bloodGroupCombo" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="A+"/>
+                    <String fx:value="A-"/>
+                    <String fx:value="B+"/>
+                    <String fx:value="B-"/>
+                    <String fx:value="AB+"/>
+                    <String fx:value="AB-"/>
+                    <String fx:value="O+"/>
+                    <String fx:value="O-"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Label text="Quantity (ml):" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="quantityField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <Label text="Location:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextField fx:id="locationField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <Label text="Remarks:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextArea fx:id="remarksArea" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Submit" onAction="#handleSubmit"/>
+        <Button text="Cancel" onAction="#handleCancel"/>
+    </HBox>
+</VBox>
