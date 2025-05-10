@@ -27,6 +27,9 @@
                           style="-fx-pref-width: 250; -fx-pref-height: 35;"/>
                 <Button text="Search" onAction="#handleSearch"
                         style="-fx-background-color: #b30000; -fx-text-fill: white;"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <Label fx:id="totalUnitsLabel" text="Total Units: 0"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
             </HBox>
 
             <TableView fx:id="donationTable" VBox.vgrow="ALWAYS">
@@ -34,10 +37,11 @@
                     <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
                     <TableColumn fx:id="donorNameColumn" text="Donor Name" prefWidth="150"/>
                     <TableColumn fx:id="bloodGroupColumn" text="Blood Group" prefWidth="100"/>
-                    <TableColumn fx:id="quantityColumn" text="Quantity (ml)" prefWidth="100"/>
+                    <TableColumn fx:id="quantityColumn" text="Units" prefWidth="80"/>
                     <TableColumn fx:id="dateColumn" text="Donation Date" prefWidth="150"/>
-                    <TableColumn fx:id="locationColumn" text="Location" prefWidth="150"/>
+                    <TableColumn fx:id="locationColumn" text="Location" prefWidth="200"/>
                     <TableColumn fx:id="remarksColumn" text="Remarks" prefWidth="200"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="100"/>
                 </columns>
             </TableView>
         </VBox>

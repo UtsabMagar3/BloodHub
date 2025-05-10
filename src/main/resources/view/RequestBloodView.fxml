@@ -2,17 +2,17 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.collections.FXCollections?>
+<?import javafx.collections.*?>
 <?import java.lang.String?>
 
 <VBox spacing="20" alignment="CENTER"
       xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="controller.DonateBloodController"
+      fx:controller="controller.RequestBloodController"
       style="-fx-background-color: white; -fx-padding: 30;"
-      prefWidth="500" prefHeight="500">
+      prefWidth="500" prefHeight="600">
 
-    <Label text="Donate Blood"
+    <Label text="Request Blood"
            style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #b30000;"/>
 
     <GridPane vgap="15" hgap="10">
@@ -38,46 +38,70 @@
             </items>
         </ComboBox>
 
-        <Label text="Quantity (Units):"
+        <Label text="Units Needed:"
                GridPane.rowIndex="1" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <TextField fx:id="quantityField"
+        <TextField fx:id="unitsField"
                   GridPane.rowIndex="1" GridPane.columnIndex="1"
-                  prefWidth="250"
-                  promptText="Enter quantity in units"/>
+                  prefWidth="250"/>
 
-        <Label text="Location:"
+        <Label text="Required Date:"
                GridPane.rowIndex="2" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <TextField fx:id="locationField"
-                  GridPane.rowIndex="2" GridPane.columnIndex="1"
-                  prefWidth="250"
-                  promptText="Enter donation location"/>
+        <DatePicker fx:id="requiredDatePicker"
+                    GridPane.rowIndex="2" GridPane.columnIndex="1"
+                    prefWidth="250"/>
 
-        <Label text="Remarks:"
+        <Label text="Hospital:"
                GridPane.rowIndex="3" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <TextArea fx:id="remarksArea"
+        <TextField fx:id="hospitalField"
                   GridPane.rowIndex="3" GridPane.columnIndex="1"
+                  prefWidth="250"/>
+
+        <Label text="Contact Number:"
+               GridPane.rowIndex="4" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="contactField"
+                  GridPane.rowIndex="4" GridPane.columnIndex="1"
+                  prefWidth="250"/>
+
+        <Label text="Emergency Level:"
+               GridPane.rowIndex="5" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="emergencyLevelCombo"
+                  GridPane.rowIndex="5" GridPane.columnIndex="1"
+                  prefWidth="250">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Critical"/>
+                    <String fx:value="Urgent"/>
+                    <String fx:value="Normal"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Label text="Additional Notes:"
+               GridPane.rowIndex="6" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextArea fx:id="notesArea"
+                  GridPane.rowIndex="6" GridPane.columnIndex="1"
                   prefWidth="250" prefRowCount="3"
-                  promptText="Enter any remarks"
                   wrapText="true"/>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Submit Donation"
+        <Button text="Submit Request"
                 onAction="#handleSubmit"
                 style="-fx-background-color: #b30000; -fx-text-fill: white;
-                       -fx-font-size: 14px; -fx-font-weight: bold;
-                       -fx-padding: 10 20; -fx-background-radius: 5;"/>
+                       -fx-font-weight: bold; -fx-padding: 10 20;"/>
         <Button text="Cancel"
                 onAction="#handleCancel"
                 style="-fx-background-color: #666666; -fx-text-fill: white;
-                       -fx-font-size: 14px; -fx-padding: 10 20;
-                       -fx-background-radius: 5;"/>
+                       -fx-padding: 10 20;"/>
     </HBox>
 
     <Label fx:id="messageLabel"
-           style="-fx-text-fill: #b30000; -fx-font-size: 13px;"
-           wrapText="true" alignment="CENTER"/>
+           style="-fx-text-fill: red; -fx-font-size: 13px;"
+           wrapText="true"/>
 </VBox>

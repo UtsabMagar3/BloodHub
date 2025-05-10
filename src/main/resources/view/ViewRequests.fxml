@@ -1,14 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.ViewRequests"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="controller.ViewRequestsController"
+            prefWidth="1000" prefHeight="700"
+            style="-fx-background-color: #f8f9fa;">
 
-</AnchorPane>
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: linear-gradient(to right, #b30000, #990000); -fx-padding: 15 25;">
+            <Label text="Blood Requests"
+                   style="-fx-font-size: 24px; -fx-font-family: 'Segoe UI'; -fx-text-fill: white;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Back to Dashboard" onAction="#handleBack"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 4;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search requests..."
+                          style="-fx-pref-width: 250; -fx-pref-height: 35;"/>
+                <ComboBox fx:id="statusFilter" promptText="Filter by Status"
+                         style="-fx-pref-width: 150; -fx-pref-height: 35;">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="All"/>
+                            <String fx:value="Pending"/>
+                            <String fx:value="Approved"/>
+                            <String fx:value="Rejected"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button text="Search" onAction="#handleSearch"
+                        style="-fx-background-color: #b30000; -fx-text-fill: white;"/>
+            </HBox>
+
+            <TableView fx:id="requestTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="userColumn" text="Requester" prefWidth="150"/>
+                    <TableColumn fx:id="bloodGroupColumn" text="Blood Group" prefWidth="100"/>
+                    <TableColumn fx:id="unitsColumn" text="Units" prefWidth="80"/>
+                    <TableColumn fx:id="requiredDateColumn" text="Required Date" prefWidth="120"/>
+                    <TableColumn fx:id="hospitalColumn" text="Hospital" prefWidth="150"/>
+                    <TableColumn fx:id="emergencyColumn" text="Emergency" prefWidth="100"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>
