@@ -6,9 +6,10 @@ import java.sql.DriverManager;
 public class DatabaseConnection {
     private static final String URL = "jdbc:mysql://localhost:3306/javafx";
     private static final String USER = "root";
-    private static final String PASSWORD = "93889";
+    private static final String PASSWORD = "93889"; // Make sure this matches your MySQL root password
 
     public static Connection getConnection() throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 }

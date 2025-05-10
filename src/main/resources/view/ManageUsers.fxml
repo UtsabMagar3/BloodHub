@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="view.ManageUsers"
-            prefHeight="400.0" prefWidth="600.0">
+            fx:controller="controller.ManageUsersController"
+            prefWidth="1000" prefHeight="700"
+            style="-fx-background-color: #f8f9fa;">
 
-</AnchorPane>
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: linear-gradient(to right, #b30000, #990000); -fx-padding: 15 25;">
+            <Label text="Manage Users"
+                   style="-fx-font-size: 24px; -fx-font-family: 'Segoe UI'; -fx-text-fill: white;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Back to Dashboard" onAction="#handleBack"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 4;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Search users..."
+                           style="-fx-pref-width: 250; -fx-pref-height: 35;"/>
+                <Button text="Search" onAction="#handleSearch"
+                        style="-fx-background-color: #b30000; -fx-text-fill: white;"/>
+            </HBox>
+
+            <TableView fx:id="userTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="nameColumn" text="Full Name" prefWidth="200"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="200"/>
+                    <TableColumn fx:id="bloodGroupColumn" text="Blood Group" prefWidth="100"/>
+                    <TableColumn fx:id="roleColumn" text="Role" prefWidth="100"/>
+                    <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

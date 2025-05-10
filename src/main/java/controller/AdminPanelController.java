@@ -7,8 +7,10 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import util.Session;
+import util.DatabaseConnection;
+
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -20,72 +22,70 @@ public class AdminPanelController {
     @FXML private Label inventoryLabel;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws Exception {
         loadDashboardStats();
     }
 
-    private void loadDashboardStats() {
-        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/bloodhub", "root", "")) {
-            Statement stmt = conn.createStatement();
+    private void loadDashboardStats() throws Exception {
+        Connection conn = DatabaseConnection.getConnection();
+        Statement stmt = conn.createStatement();
 
-            ResultSet rs1 = stmt.executeQuery("SELECT COUNT(*) FROM users");
-            if (rs1.next()) totalUsersLabel.setText("Users: " + rs1.getInt(1));
+        // Count total registered users
+        ResultSet rs1 = stmt.executeQuery("SELECT COUNT(*) FROM users");
+        rs1.next();
+        totalUsersLabel.setText(String.valueOf(rs1.getInt(1)));
 
-            ResultSet rs2 = stmt.executeQuery("SELECT COUNT(*) FROM donations");
-            if (rs2.next()) totalDonationsLabel.setText("Donations: " + rs2.getInt(1));
+        // Count total donations
+        ResultSet rs2 = stmt.executeQuery("SELECT COUNT(*) FROM donations");
+        rs2.next();
+        totalDonationsLabel.setText(String.valueOf(rs2.getInt(1)));
 
-            ResultSet rs3 = stmt.executeQuery("SELECT COUNT(*) FROM requests");
-            if (rs3.next()) totalRequestsLabel.setText("Requests: " + rs3.getInt(1));
+        // Count total blood requests
+        ResultSet rs3 = stmt.executeQuery("SELECT COUNT(*) FROM requests");
+        rs3.next();
+        totalRequestsLabel.setText(String.valueOf(rs3.getInt(1)));
 
-            ResultSet rs4 = stmt.executeQuery("SELECT SUM(units) FROM inventory");
-            if (rs4.next()) inventoryLabel.setText("Inventory Units: " + rs4.getInt(1));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        // Sum total blood units - assuming 'quantity' is the column name
+        ResultSet rs4 = stmt.executeQuery("SELECT COUNT(*) FROM inventory");
+        rs4.next();
+        inventoryLabel.setText(String.valueOf(rs4.getInt(1)));
+
+        conn.close();
     }
 
     @FXML
-    private void handleLogout(javafx.event.ActionEvent event) {
+    private void handleLogout(javafx.event.ActionEvent event) throws IOException {
         Session.setCurrentUser(null);
-        try {
-            Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
-            Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 800, 600));
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Parent root = FXMLLoader.load(getClass().getResource("/view/Login.fxml"));
+        Stage stage = (Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root, 800, 600));
+        stage.show();
     }
 
     @FXML
-    private void handleManageUsers() {
+    private void handleManageUsers() throws IOException {
         loadScene("/view/ManageUsers.fxml");
     }
 
     @FXML
-    private void handleViewDonations() {
+    private void handleViewDonations() throws IOException {
         loadScene("/view/ViewDonations.fxml");
     }
 
     @FXML
-    private void handleViewRequests() {
+    private void handleViewRequests() throws IOException {
         loadScene("/view/ViewRequests.fxml");
     }
 
     @FXML
-    private void handleViewInventory() {
+    private void handleViewInventory() throws IOException {
         loadScene("/view/ViewInventory.fxml");
     }
 
-
-    private void loadScene(String fxmlPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
-            Stage stage = (Stage) totalUsersLabel.getScene().getWindow();
-            stage.setScene(new Scene(root, 1000, 700));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    private void loadScene(String fxmlPath) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        Parent root = loader.load();
+        Stage stage = (Stage) totalUsersLabel.getScene().getWindow();
+        stage.setScene(new Scene(root, 1000, 700));
     }
 }
