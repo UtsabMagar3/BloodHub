@@ -39,6 +39,7 @@ public class ViewRequestsController {
         setupTableColumns();
         loadRequests();
         setupStatusFilter();
+        setupTableSorting();
     }
 
     private void setupTableColumns() {
@@ -66,11 +67,19 @@ public class ViewRequestsController {
 
                 approveBtn.setOnAction(event -> {
                     BloodRequest request = getTableView().getItems().get(getIndex());
+                    if (!"Pending".equals(request.getStatus())) {
+                        showAlert("Error", "Can only approve pending requests", Alert.AlertType.ERROR);
+                        return;
+                    }
                     updateRequestStatus(request, "Approved");
                 });
 
                 rejectBtn.setOnAction(event -> {
                     BloodRequest request = getTableView().getItems().get(getIndex());
+                    if (!"Pending".equals(request.getStatus())) {
+                        showAlert("Error", "Can only reject pending requests", Alert.AlertType.ERROR);
+                        return;
+                    }
                     updateRequestStatus(request, "Rejected");
                 });
             }
@@ -96,12 +105,12 @@ public class ViewRequestsController {
         requestList.clear();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT r.*, u.full_name FROM requests r " +
-                     "JOIN users u ON r.user_id = u.id")) {
+                "SELECT r.*, u.full_name FROM requests r " +
+                "JOIN users u ON r.user_id = u.id")) {
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                BloodRequest request = new BloodRequest(
+                requestList.add(new BloodRequest(
                     rs.getInt("id"),
                     rs.getString("full_name"),
                     rs.getString("blood_group"),
@@ -110,48 +119,98 @@ public class ViewRequestsController {
                     rs.getString("hospital"),
                     rs.getString("emergency_level"),
                     rs.getString("status")
-                );
-                requestList.add(request);
+                ));
             }
             requestTable.setItems(requestList);
+
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to load blood requests", Alert.AlertType.ERROR);
+            showAlert("Error", "Failed to load requests", Alert.AlertType.ERROR);
         }
     }
 
     private void updateRequestStatus(BloodRequest request, String newStatus) {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            // First update the request status
-            PreparedStatement stmt = conn.prepareStatement(
-                    "UPDATE requests SET status = ? WHERE id = ?");
-            stmt.setString(1, newStatus);
-            stmt.setInt(2, request.getId());
+            conn.setAutoCommit(false);
+            try {
+                if ("Approved".equals(newStatus)) {
+                    // Check inventory availability first
+                    PreparedStatement checkStmt = conn.prepareStatement(
+                        "SELECT total_units FROM inventory WHERE blood_group = ?");
+                    checkStmt.setString(1, request.getBloodGroup());
+                    ResultSet rs = checkStmt.executeQuery();
 
-            int result = stmt.executeUpdate();
-            if (result > 0) {
+                    if (!rs.next() || rs.getInt("total_units") < request.getUnitsNeeded()) {
+                        showAlert("Error", "Not enough units available in inventory", Alert.AlertType.ERROR);
+                        return;
+                    }
+
+                    // Update inventory
+                    PreparedStatement updateInventoryStmt = conn.prepareStatement(
+                        "UPDATE inventory SET total_units = total_units - ? WHERE blood_group = ?");
+                    updateInventoryStmt.setInt(1, request.getUnitsNeeded());
+                    updateInventoryStmt.setString(2, request.getBloodGroup());
+                    updateInventoryStmt.executeUpdate();
+                }
+
+                // Update request status
+                PreparedStatement updateRequestStmt = conn.prepareStatement(
+                    "UPDATE requests SET status = ? WHERE id = ?");
+                updateRequestStmt.setString(1, newStatus);
+                updateRequestStmt.setInt(2, request.getId());
+                updateRequestStmt.executeUpdate();
+
                 // Create notification
                 PreparedStatement notifStmt = conn.prepareStatement(
-                        "INSERT INTO notifications (user_id, message) " +
-                                "SELECT user_id, ? FROM requests WHERE id = ?");
+                    "INSERT INTO notifications (user_id, message, is_read) " +
+                    "SELECT user_id, ?, FALSE FROM requests WHERE id = ?");
 
                 String message = String.format("Your blood request for %d units of %s has been %s.",
-                        request.getUnitsNeeded(),
-                        request.getBloodGroup(),
-                        newStatus.toLowerCase());
-
+                    request.getUnitsNeeded(), request.getBloodGroup(), newStatus.toLowerCase());
                 notifStmt.setString(1, message);
                 notifStmt.setInt(2, request.getId());
                 notifStmt.executeUpdate();
 
+                conn.commit();
                 request.setStatus(newStatus);
                 requestTable.refresh();
-                showAlert("Success", "Request status updated successfully", Alert.AlertType.INFORMATION);
+                showAlert("Success", "Request " + newStatus.toLowerCase() + " successfully",
+                    Alert.AlertType.INFORMATION);
+
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
             }
         } catch (Exception e) {
             e.printStackTrace();
             showAlert("Error", "Failed to update request status", Alert.AlertType.ERROR);
         }
+    }
+
+    private void setupTableSorting() {
+        idColumn.setSortType(TableColumn.SortType.ASCENDING);
+        requestTable.getSortOrder().add(idColumn);
+
+        requiredDateColumn.setComparator((d1, d2) -> {
+            if (d1 == null || d2 == null) return 0;
+            return d1.compareTo(d2);
+        });
+
+        emergencyColumn.setComparator((e1, e2) -> {
+            if (e1 == null || e2 == null) return 0;
+            return switch (e1) {
+                case "High" -> e2.equals("High") ? 0 : 1;
+                case "Medium" -> e2.equals("High") ? -1 : e2.equals("Medium") ? 0 : 1;
+                case "Low" -> e2.equals("Low") ? 0 : -1;
+                default -> 0;
+            };
+        });
+    }
+
+    private void setupStatusFilter() {
+        statusFilter.getItems().addAll("All", "Pending", "Approved", "Rejected");
+        statusFilter.setValue("All");
+        statusFilter.setOnAction(e -> handleSearch());
     }
 
     @FXML
@@ -166,11 +225,6 @@ public class ViewRequestsController {
              request.getHospital().toLowerCase().contains(searchText)) &&
             (status == null || status.equals("All") || status.equals(request.getStatus()))
         ));
-    }
-
-    private void setupStatusFilter() {
-        statusFilter.setValue("All");
-        statusFilter.setOnAction(e -> handleSearch());
     }
 
     @FXML
@@ -191,5 +245,4 @@ public class ViewRequestsController {
         alert.setContentText(content);
         alert.showAndWait();
     }
-
 }

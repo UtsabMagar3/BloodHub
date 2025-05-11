@@ -2,8 +2,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.collections.FXCollections?>
-<?import java.lang.String?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -27,19 +25,8 @@
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <TextField fx:id="searchField" promptText="Search requests..."
                           style="-fx-pref-width: 250; -fx-pref-height: 35;"/>
-                <ComboBox fx:id="statusFilter" promptText="Filter by Status"
-                         style="-fx-pref-width: 150; -fx-pref-height: 35;">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="All"/>
-                            <String fx:value="Pending"/>
-                            <String fx:value="Approved"/>
-                            <String fx:value="Rejected"/>
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-                <Button text="Search" onAction="#handleSearch"
-                        style="-fx-background-color: #b30000; -fx-text-fill: white;"/>
+                <ComboBox fx:id="statusFilter" promptText="Filter by status"
+                          style="-fx-pref-width: 150; -fx-pref-height: 35;"/>
             </HBox>
 
             <TableView fx:id="requestTable" VBox.vgrow="ALWAYS">

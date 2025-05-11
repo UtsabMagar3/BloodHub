@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.ViewInventoryController"
+            prefWidth="1000" prefHeight="700"
+            style="-fx-background-color: #f8f9fa;">
+
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: linear-gradient(to right, #b30000, #990000); -fx-padding: 15 25;">
+            <Label text="Blood Inventory"
+                   style="-fx-font-size: 24px; -fx-font-family: 'Segoe UI'; -fx-text-fill: white;"/>
+            <Pane HBox.hgrow="ALWAYS"/>
+            <Button text="Back to Dashboard" onAction="#handleBack"
+                    style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 4;"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <ComboBox fx:id="bloodGroupCombo" prefWidth="200"/>
+                <Button text="Search" onAction="#handleSearch"
+                        style="-fx-background-color: #b30000; -fx-text-fill: white;"/>
+            </HBox>
+
+            <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="bloodGroupColumn" text="Blood Group" prefWidth="200"/>
+                    <TableColumn fx:id="unitsColumn" text="Available Units" prefWidth="200"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="200"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

@@ -114,7 +114,7 @@ public class HomeController {
 
     @FXML
     private void handleInventory() {
-        openWindow("/view/InventoryView.fxml", "Blood Inventory");
+        openWindow("/view/UserViewInventory.fxml", "Blood Inventory");
     }
 
     private void openWindow(String fxmlPath, String title) {

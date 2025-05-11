@@ -53,17 +53,22 @@ public class DonateBloodController {
 
     private void updateInventory(Connection conn, String bloodGroup, int quantity) {
         try {
-            String sql = "INSERT INTO inventory (blood_group, total_quantity_ml) " +
+            String sql = "INSERT INTO inventory (blood_group, total_units) " +
                         "VALUES (?, ?) ON DUPLICATE KEY UPDATE " +
-                        "total_quantity_ml = total_quantity_ml + ?";
+                        "total_units = total_units + ?";
 
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, bloodGroup);
             stmt.setInt(2, quantity);
             stmt.setInt(3, quantity);
-            stmt.executeUpdate();
+
+            int result = stmt.executeUpdate();
+            if (result > 0) {
+                showMessage("Blood inventory updated successfully", "success");
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            showMessage("Error updating inventory: " + e.getMessage(), "error");
         }
     }
 

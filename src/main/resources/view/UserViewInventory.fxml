@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="CENTER"
+      xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="controller.UserViewInventoryController"
+      style="-fx-background-color: white; -fx-padding: 30;"
+      prefWidth="800" prefHeight="600">
+
+    <Label text="Blood Inventory Status"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #b30000;"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <ComboBox fx:id="bloodGroupCombo" prefWidth="200"
+                  promptText="Select Blood Group"/>
+        <Button text="Search" onAction="#handleSearch"
+                style="-fx-background-color: #b30000; -fx-text-fill: white;"/>
+    </HBox>
+
+    <Label fx:id="statusLabel" wrapText="true" alignment="CENTER"
+           style="-fx-padding: 10; -fx-background-color: #f8f9fa; -fx-background-radius: 5;"/>
+
+    <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="bloodGroupColumn" text="Blood Group" prefWidth="200"/>
+            <TableColumn fx:id="unitsColumn" text="Available Units" prefWidth="200"/>
+            <TableColumn fx:id="statusColumn" text="Status" prefWidth="200"/>
+            <TableColumn fx:id="actionColumn" text="Action" prefWidth="150"/>
+        </columns>
+        <placeholder>
+            <Label text="No blood inventory data available"/>
+        </placeholder>
+    </TableView>
+</VBox>

@@ -2,8 +2,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.collections.*?>
-<?import java.lang.String?>
 
 <VBox spacing="20" alignment="CENTER"
       xmlns="http://javafx.com/javafx"
@@ -18,90 +16,50 @@
     <GridPane vgap="15" hgap="10">
         <padding><Insets top="20" bottom="20"/></padding>
 
-        <Label text="Blood Group:"
-               GridPane.rowIndex="0" GridPane.columnIndex="0"
+        <Label text="Blood Group:" GridPane.rowIndex="0" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="bloodGroupCombo"
-                  GridPane.rowIndex="0" GridPane.columnIndex="1"
-                  prefWidth="250">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="A+"/>
-                    <String fx:value="A-"/>
-                    <String fx:value="B+"/>
-                    <String fx:value="B-"/>
-                    <String fx:value="AB+"/>
-                    <String fx:value="AB-"/>
-                    <String fx:value="O+"/>
-                    <String fx:value="O-"/>
-                </FXCollections>
-            </items>
-        </ComboBox>
-
-        <Label text="Units Needed:"
-               GridPane.rowIndex="1" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <TextField fx:id="unitsField"
-                  GridPane.rowIndex="1" GridPane.columnIndex="1"
+        <ComboBox fx:id="bloodGroupCombo" GridPane.rowIndex="0" GridPane.columnIndex="1"
                   prefWidth="250"/>
 
-        <Label text="Required Date:"
-               GridPane.rowIndex="2" GridPane.columnIndex="0"
+        <Label text="Units Needed:" GridPane.rowIndex="1" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <DatePicker fx:id="requiredDatePicker"
-                    GridPane.rowIndex="2" GridPane.columnIndex="1"
+        <TextField fx:id="unitsField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                  prefWidth="250" promptText="Enter number of units"/>
+
+        <Label text="Required Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="requiredDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"
                     prefWidth="250"/>
 
-        <Label text="Hospital:"
-               GridPane.rowIndex="3" GridPane.columnIndex="0"
+        <Label text="Hospital:" GridPane.rowIndex="3" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <TextField fx:id="hospitalField"
-                  GridPane.rowIndex="3" GridPane.columnIndex="1"
+        <TextField fx:id="hospitalField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                  prefWidth="250" promptText="Enter hospital name"/>
+
+        <Label text="Emergency Level:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="emergencyLevelCombo" GridPane.rowIndex="4" GridPane.columnIndex="1"
                   prefWidth="250"/>
 
-        <Label text="Contact Number:"
-               GridPane.rowIndex="4" GridPane.columnIndex="0"
+        <Label text="Reason:" GridPane.rowIndex="5" GridPane.columnIndex="0"
                style="-fx-font-weight: bold;"/>
-        <TextField fx:id="contactField"
-                  GridPane.rowIndex="4" GridPane.columnIndex="1"
-                  prefWidth="250"/>
-
-        <Label text="Emergency Level:"
-               GridPane.rowIndex="5" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <ComboBox fx:id="emergencyLevelCombo"
-                  GridPane.rowIndex="5" GridPane.columnIndex="1"
-                  prefWidth="250">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="Critical"/>
-                    <String fx:value="Urgent"/>
-                    <String fx:value="Normal"/>
-                </FXCollections>
-            </items>
-        </ComboBox>
-
-        <Label text="Additional Notes:"
-               GridPane.rowIndex="6" GridPane.columnIndex="0"
-               style="-fx-font-weight: bold;"/>
-        <TextArea fx:id="notesArea"
-                  GridPane.rowIndex="6" GridPane.columnIndex="1"
+        <TextArea fx:id="reasonArea" GridPane.rowIndex="5" GridPane.columnIndex="1"
                   prefWidth="250" prefRowCount="3"
-                  wrapText="true"/>
+                  promptText="Enter reason for request" wrapText="true"/>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Submit Request"
-                onAction="#handleSubmit"
+        <Button text="Submit Request" onAction="#handleSubmit"
                 style="-fx-background-color: #b30000; -fx-text-fill: white;
-                       -fx-font-weight: bold; -fx-padding: 10 20;"/>
-        <Button text="Cancel"
-                onAction="#handleCancel"
+                       -fx-font-size: 14px; -fx-font-weight: bold;
+                       -fx-padding: 10 20; -fx-background-radius: 5;"/>
+        <Button text="Cancel" onAction="#handleCancel"
                 style="-fx-background-color: #666666; -fx-text-fill: white;
-                       -fx-padding: 10 20;"/>
+                       -fx-font-size: 14px; -fx-padding: 10 20;
+                       -fx-background-radius: 5;"/>
     </HBox>
 
     <Label fx:id="messageLabel"
-           style="-fx-text-fill: red; -fx-font-size: 13px;"
-           wrapText="true"/>
+           style="-fx-text-fill: #b30000; -fx-font-size: 13px;"
+           wrapText="true" alignment="CENTER"/>
 </VBox>
