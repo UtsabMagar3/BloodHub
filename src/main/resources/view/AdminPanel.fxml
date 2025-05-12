@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
@@ -65,7 +64,7 @@
                 </StackPane>
             </GridPane>
 
-            <!-- Action Buttons (Activity Logs removed) -->
+            <!-- Action Buttons -->
             <HBox spacing="20" alignment="CENTER">
                 <Button text="MANAGE USERS" onAction="#handleManageUsers"
                         style="-fx-pref-width: 180; -fx-pref-height: 50; -fx-font-size: 14px; -fx-font-family: 'Segoe UI Semibold'; -fx-background-color: #b30000; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand;"/>

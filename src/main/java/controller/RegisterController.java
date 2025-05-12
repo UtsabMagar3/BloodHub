@@ -13,13 +13,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class RegisterController {
-    @FXML private TextField fullNameField, emailField, phoneField, addressField, dobField;
-    @FXML private PasswordField passwordField;
-    @FXML private ComboBox<String> bloodGroupComboBox, genderComboBox;
-    @FXML private Label messageLabel;
 
+    @FXML private TextField fullNameField, emailField, phoneField, addressField, dobField;  // Input fields
+    @FXML private PasswordField passwordField;  // Password field
+    @FXML private ComboBox<String> bloodGroupComboBox, genderComboBox;  // Combo boxes for blood group and gender
+    @FXML private Label messageLabel;  // Label to display messages
+
+    // Handle registration action
     @FXML
     public void handleRegister(ActionEvent event) {
+        // Get input values
         String fullName = fullNameField.getText();
         String email = emailField.getText();
         String password = passwordField.getText();
@@ -29,11 +32,13 @@ public class RegisterController {
         String address = addressField.getText();
         String dob = dobField.getText();
 
+        // Check if required fields are filled
         if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || bloodGroup == null || gender == null) {
             messageLabel.setText("Please fill in all required fields.");
             return;
         }
 
+        // Attempt to register the user in the database
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "INSERT INTO users (full_name, email, password, phone, address, blood_group, date_of_birth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -45,23 +50,24 @@ public class RegisterController {
                 stmt.setString(6, bloodGroup);
                 stmt.setString(7, dob);
                 stmt.setString(8, gender);
-                stmt.executeUpdate();
+                stmt.executeUpdate();  // Execute the query to insert the user
                 messageLabel.setText("Registration successful.");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();  // Log error
             messageLabel.setText("Registration failed.");
         }
     }
 
+    // Navigate to the login page
     @FXML
     public void goToLogin(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource("/view/login.fxml"));
             Stage stage = (Stage) fullNameField.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(root));  // Change the scene to the login page
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace();  // Log error
         }
     }
 }

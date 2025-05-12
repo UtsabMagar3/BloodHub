@@ -10,20 +10,24 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 public class EditUserController {
+
+    // UI components from FXML
     @FXML private TextField fullNameField;
     @FXML private TextField emailField;
     @FXML private ComboBox<String> bloodGroupCombo;
     @FXML private ComboBox<String> roleCombo;
 
-    private User user;
-    private boolean saveClicked = false;
+    private User user;               // User object to edit
+    private boolean saveClicked = false;  // Flag to check if Save was clicked
 
+    // Initialize the combo boxes with values
     @FXML
     public void initialize() {
         bloodGroupCombo.getItems().addAll("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-");
         roleCombo.getItems().addAll("Admin", "User");
     }
 
+    // Populate the form fields with user data
     public void setUser(User user) {
         this.user = user;
         fullNameField.setText(user.getFullName());
@@ -32,38 +36,44 @@ public class EditUserController {
         roleCombo.setValue(user.getRole());
     }
 
+    // Handle save button click
     @FXML
     private void handleSave() {
-        if (isInputValid()) {
+        if (isInputValid()) {  // Check input validation
             try (Connection conn = DatabaseConnection.getConnection();
                  PreparedStatement stmt = conn.prepareStatement(
                          "UPDATE users SET full_name=?, email=?, blood_group=?, role=? WHERE id=?")) {
 
+                // Set the updated values to the statement
                 stmt.setString(1, fullNameField.getText());
                 stmt.setString(2, emailField.getText());
                 stmt.setString(3, bloodGroupCombo.getValue());
                 stmt.setString(4, roleCombo.getValue());
                 stmt.setInt(5, user.getId());
 
+                // Execute the update
                 int affected = stmt.executeUpdate();
                 if (affected > 0) {
                     saveClicked = true;
-                    closeDialog();
+                    closeDialog(); // Close the window after saving
                 }
             } catch (Exception e) {
-                showAlert("Error", "Failed to update user");
+                showAlert("Error", "Failed to update user"); // Show error alert
                 e.printStackTrace();
             }
         }
     }
 
+    // Handle cancel button click
     @FXML
     private void handleCancel() {
-        closeDialog();
+        closeDialog(); // Close the window without saving
     }
 
+    // Validate form inputs
     private boolean isInputValid() {
         String errorMessage = "";
+
         if (fullNameField.getText().trim().isEmpty()) {
             errorMessage += "Full name is required!\n";
         }
@@ -78,13 +88,14 @@ public class EditUserController {
         }
 
         if (errorMessage.isEmpty()) {
-            return true;
+            return true; // No errors
         } else {
-            showAlert("Invalid Fields", errorMessage);
+            showAlert("Invalid Fields", errorMessage); // Show input error message
             return false;
         }
     }
 
+    // Utility method to show error alerts
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -92,11 +103,13 @@ public class EditUserController {
         alert.showAndWait();
     }
 
+    // Close the current dialog/window
     private void closeDialog() {
         Stage stage = (Stage) fullNameField.getScene().getWindow();
         stage.close();
     }
 
+    // Return whether the save button was clicked
     public boolean isSaveClicked() {
         return saveClicked;
     }

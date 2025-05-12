@@ -62,6 +62,7 @@ public class RequestBloodController {
             }
         }
     }
+
     public void setAvailableUnits(int units) {
         this.availableUnits = units;
         if (units <= 0) {
@@ -73,58 +74,58 @@ public class RequestBloodController {
         }
     }
 
-   @FXML
-   private void handleSubmit() {
-       if (!validateFields()) {
-           return;
-       }
+    @FXML
+    private void handleSubmit() {
+        if (!validateFields()) {
+            return;
+        }
 
-       try (Connection conn = DatabaseConnection.getConnection()) {
-           int requestedUnits = Integer.parseInt(unitsField.getText().trim());
+        try (Connection conn = DatabaseConnection.getConnection()) {
+            int requestedUnits = Integer.parseInt(unitsField.getText().trim());
 
-           // Recheck availability before submitting
-           PreparedStatement checkStmt = conn.prepareStatement(
-               "SELECT total_units FROM inventory WHERE blood_group = ?");
-           checkStmt.setString(1, bloodGroupCombo.getValue());
-           ResultSet rs = checkStmt.executeQuery();
+            // Recheck availability before submitting
+            PreparedStatement checkStmt = conn.prepareStatement(
+                    "SELECT total_units FROM inventory WHERE blood_group = ?");
+            checkStmt.setString(1, bloodGroupCombo.getValue());
+            ResultSet rs = checkStmt.executeQuery();
 
-           if (!rs.next() || rs.getInt("total_units") < requestedUnits) {
-               showMessage("Not enough units available. Please check availability again.", "error");
-               return;
-           }
+            if (!rs.next() || rs.getInt("total_units") < requestedUnits) {
+                showMessage("Not enough units available. Please check availability again.", "error");
+                return;
+            }
 
-           // Insert request with Pending status
-           String sql = "INSERT INTO requests (user_id, blood_group, units_needed, " +
-                       "required_date, hospital, emergency_level, request_reason, status) " +
-                       "VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')";
+            // Insert request with Pending status
+            String sql = "INSERT INTO requests (user_id, blood_group, units_needed, " +
+                    "required_date, hospital, emergency_level, request_reason, status) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending')";
 
-           PreparedStatement stmt = conn.prepareStatement(sql);
-           stmt.setInt(1, Session.getCurrentUser().getId());
-           stmt.setString(2, bloodGroupCombo.getValue());
-           stmt.setInt(3, requestedUnits);
-           stmt.setString(4, requiredDatePicker.getValue().toString());
-           stmt.setString(5, hospitalField.getText().trim());
-           stmt.setString(6, emergencyLevelCombo.getValue());
-           stmt.setString(7, reasonArea.getText().trim());
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, Session.getCurrentUser().getId());
+            stmt.setString(2, bloodGroupCombo.getValue());
+            stmt.setInt(3, requestedUnits);
+            stmt.setString(4, requiredDatePicker.getValue().toString());
+            stmt.setString(5, hospitalField.getText().trim());
+            stmt.setString(6, emergencyLevelCombo.getValue());
+            stmt.setString(7, reasonArea.getText().trim());
 
-           int result = stmt.executeUpdate();
-           if (result > 0) {
-               showMessage("Blood request submitted successfully! Waiting for approval.", "success");
-               clearFields();
-               ((Stage) bloodGroupCombo.getScene().getWindow()).close();
-           } else {
-               showMessage("Failed to submit request", "error");
-           }
-       } catch (Exception e) {
-           e.printStackTrace();
-           showMessage("Error: " + e.getMessage(), "error");
-       }
-   }
+            int result = stmt.executeUpdate();
+            if (result > 0) {
+                showMessage("Blood request submitted successfully! Waiting for approval.", "success");
+                clearFields();
+                ((Stage) bloodGroupCombo.getScene().getWindow()).close();
+            } else {
+                showMessage("Failed to submit request", "error");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessage("Error: " + e.getMessage(), "error");
+        }
+    }
 
     private boolean validateFields() {
         if (bloodGroupCombo.getValue() == null || unitsField.getText().isEmpty() ||
-            requiredDatePicker.getValue() == null || hospitalField.getText().isEmpty() ||
-            emergencyLevelCombo.getValue() == null) {
+                requiredDatePicker.getValue() == null || hospitalField.getText().isEmpty() ||
+                emergencyLevelCombo.getValue() == null) {
             showMessage("Please fill all required fields", "error");
             return false;
         }
@@ -160,7 +161,7 @@ public class RequestBloodController {
     private void showMessage(String message, String type) {
         messageLabel.setText(message);
         messageLabel.setStyle(type.equals("success") ?
-            "-fx-text-fill: green;" : "-fx-text-fill: red;");
+                "-fx-text-fill: green;" : "-fx-text-fill: red;");
     }
 
     private void clearFields() {

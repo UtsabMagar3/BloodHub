@@ -14,20 +14,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-
 public class HomeController {
 
     private User loggedInUser;
 
+    // Sets the logged-in user and stores it in session
     public void setUser(User user) {
         this.loggedInUser = user;
         Session.setCurrentUser(user);
     }
 
+    // Show unread notifications and mark them as read
     @FXML
     private void handleNotifications() {
         try (Connection conn = DatabaseConnection.getConnection()) {
-            // Get unread notifications for current user
             PreparedStatement stmt = conn.prepareStatement(
                     "SELECT id, message, created_at FROM notifications " +
                             "WHERE user_id = ? AND is_read = FALSE " +
@@ -39,6 +39,7 @@ public class HomeController {
             StringBuilder notifications = new StringBuilder();
             boolean hasNotifications = false;
 
+            // Collect notifications and mark each as read
             while (rs.next()) {
                 hasNotifications = true;
                 notifications.append("• ")
@@ -48,23 +49,17 @@ public class HomeController {
                         .append(rs.getTimestamp("created_at"))
                         .append(")\n\n");
 
-                // Mark notification as read
                 PreparedStatement updateStmt = conn.prepareStatement(
                         "UPDATE notifications SET is_read = TRUE WHERE id = ?");
                 updateStmt.setInt(1, rs.getInt("id"));
                 updateStmt.executeUpdate();
             }
 
+            // Display notifications in alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Notifications");
             alert.setHeaderText(null);
-
-            if (hasNotifications) {
-                alert.setContentText(notifications.toString());
-            } else {
-                alert.setContentText("No new notifications");
-            }
-
+            alert.setContentText(hasNotifications ? notifications.toString() : "No new notifications");
             alert.showAndWait();
 
         } catch (Exception e) {
@@ -76,12 +71,15 @@ public class HomeController {
         }
     }
 
+    // Show user profile details
     @FXML
     private void handleProfile() {
         User user = Session.getCurrentUser();
         if (user != null) {
-            String profile = "Name: " + user.getFullName() + "\nEmail: " + user.getEmail() +
-                    "\nBlood Group: " + user.getBloodGroup() + "\nRole: " + user.getRole();
+            String profile = "Name: " + user.getFullName() +
+                    "\nEmail: " + user.getEmail() +
+                    "\nBlood Group: " + user.getBloodGroup() +
+                    "\nRole: " + user.getRole();
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Profile");
             alert.setHeaderText("User Profile");
@@ -90,6 +88,7 @@ public class HomeController {
         }
     }
 
+    // Clear session and redirect to login screen
     @FXML
     private void handleLogout(javafx.event.ActionEvent event) {
         Session.setCurrentUser(null);
@@ -102,21 +101,26 @@ public class HomeController {
             e.printStackTrace();
         }
     }
+
+    // Load donation form
     @FXML
     private void handleDonateBlood() {
         openWindow("/view/DonateBloodView.fxml", "Donate Blood");
     }
 
+    // Load request form
     @FXML
     private void handleRequestBlood() {
         openWindow("/view/RequestBloodView.fxml", "Request Blood");
     }
 
+    // Load inventory view
     @FXML
     private void handleInventory() {
         openWindow("/view/UserViewInventory.fxml", "Blood Inventory");
     }
 
+    // Utility method to load new windows
     private void openWindow(String fxmlPath, String title) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -129,8 +133,4 @@ public class HomeController {
             e.printStackTrace();
         }
     }
-
-
-
-
 }

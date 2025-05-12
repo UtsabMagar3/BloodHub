@@ -21,6 +21,7 @@ import java.sql.Statement;
 
 public class ManageUsersController {
 
+    // FXML injected controls
     @FXML private TableView<User> userTable;
     @FXML private TableColumn<User, Integer> idColumn;
     @FXML private TableColumn<User, String> nameColumn;
@@ -30,30 +31,37 @@ public class ManageUsersController {
     @FXML private TableColumn<User, Void> actionsColumn;
     @FXML private TextField searchField;
 
+    // Observable list to store and manage users
     private ObservableList<User> userList = FXCollections.observableArrayList();
 
+    // Initialize the controller
     @FXML
     public void initialize() {
         setupTableColumns();
         loadUsers();
     }
 
+    // Set up table columns and their cell factories
     private void setupTableColumns() {
+        // Bind table columns to User properties
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         bloodGroupColumn.setCellValueFactory(new PropertyValueFactory<>("bloodGroup"));
         roleColumn.setCellValueFactory(new PropertyValueFactory<>("role"));
 
+        // Configure actions column with edit and delete buttons
         actionsColumn.setCellFactory(column -> new TableCell<>() {
             private final Button editButton = new Button("Edit");
             private final Button deleteButton = new Button("Delete");
             private final HBox buttons = new HBox(5, editButton, deleteButton);
 
             {
+                // Style buttons
                 editButton.setStyle("-fx-background-color: #0275d8; -fx-text-fill: white;");
                 deleteButton.setStyle("-fx-background-color: #d9534f; -fx-text-fill: white;");
 
+                // Set button actions
                 editButton.setOnAction(event -> {
                     User user = getTableView().getItems().get(getIndex());
                     handleEdit(user);
@@ -73,6 +81,7 @@ public class ManageUsersController {
         });
     }
 
+    // Load users from database
     private void loadUsers() {
         userList.clear();
         try (Connection conn = DatabaseConnection.getConnection();
@@ -80,33 +89,35 @@ public class ManageUsersController {
              ResultSet rs = stmt.executeQuery("SELECT id, full_name, email, blood_group, role FROM users")) {
 
             while (rs.next()) {
-                User user = new User(
-                        rs.getInt("id"),
-                        rs.getString("full_name"),
-                        rs.getString("email"),
-                        rs.getString("blood_group"),
-                        rs.getString("role")
-                );
-                userList.add(user);
+                userList.add(new User(
+                    rs.getInt("id"),
+                    rs.getString("full_name"),
+                    rs.getString("email"),
+                    rs.getString("blood_group"),
+                    rs.getString("role")
+                ));
             }
             userTable.setItems(userList);
 
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to load users");
         }
     }
 
+    // Handle search functionality
     @FXML
     private void handleSearch() {
         String searchText = searchField.getText().toLowerCase();
-        ObservableList<User> filteredList = userList.filtered(user ->
-                user.getFullName().toLowerCase().contains(searchText) ||
-                        user.getEmail().toLowerCase().contains(searchText) ||
-                        user.getBloodGroup().toLowerCase().contains(searchText)
-        );
-        userTable.setItems(filteredList);
+        userTable.setItems(userList.filtered(user ->
+            user.getFullName().toLowerCase().contains(searchText) ||
+            user.getEmail().toLowerCase().contains(searchText) ||
+            user.getBloodGroup().toLowerCase().contains(searchText) ||
+            user.getRole().toLowerCase().contains(searchText)
+        ));
     }
 
+    // Handle edit user action
     private void handleEdit(User user) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditUser.fxml"));
@@ -122,7 +133,7 @@ public class ManageUsersController {
             stage.showAndWait();
 
             if (controller.isSaveClicked()) {
-                loadUsers(); // Refresh the table
+                loadUsers();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,6 +141,7 @@ public class ManageUsersController {
         }
     }
 
+    // Handle delete user action
     private void handleDelete(User user) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Are you sure you want to delete user: " + user.getFullName() + "?",
@@ -142,6 +154,7 @@ public class ManageUsersController {
         });
     }
 
+    // Delete user from database
     private void deleteUser(User user) {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?")) {
@@ -159,6 +172,7 @@ public class ManageUsersController {
         }
     }
 
+    // Handle back button action
     @FXML
     private void handleBack() {
         try {
@@ -167,9 +181,11 @@ public class ManageUsersController {
             stage.setScene(new Scene(root, 1000, 700));
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert("Error", "Failed to return to dashboard");
         }
     }
 
+    // Utility method to show alerts
     private void showAlert(String title, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);

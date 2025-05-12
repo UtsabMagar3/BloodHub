@@ -1,5 +1,6 @@
 package controller;
 
+// Import JavaFX controls and utility classes
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -11,22 +12,25 @@ import java.sql.PreparedStatement;
 import java.time.LocalDate;
 
 public class DonateBloodController {
+
+    // FXML components from the UI
     @FXML private ComboBox<String> bloodGroupCombo;
     @FXML private TextField quantityField;
     @FXML private TextField locationField;
     @FXML private TextArea remarksArea;
     @FXML private Label messageLabel;
 
+    // Handles the form submission for blood donation
     @FXML
     private void handleSubmit() {
         if (!validateFields()) {
-            return;
+            return; // Abort if validation fails
         }
 
         try (Connection conn = DatabaseConnection.getConnection()) {
+            // Insert donation record into database
             String sql = "INSERT INTO donations (user_id, blood_group, quantity_unit, " +
-                        "donation_date, location, remarks) VALUES (?, ?, ?, ?, ?, ?)";
-
+                    "donation_date, location, remarks) VALUES (?, ?, ?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, Session.getCurrentUser().getId());
             stmt.setString(2, bloodGroupCombo.getValue());
@@ -36,9 +40,11 @@ public class DonateBloodController {
             stmt.setString(6, remarksArea.getText().trim());
 
             int result = stmt.executeUpdate();
+
+            // If insert is successful, update inventory
             if (result > 0) {
                 updateInventory(conn, bloodGroupCombo.getValue(),
-                              Integer.parseInt(quantityField.getText().trim()));
+                        Integer.parseInt(quantityField.getText().trim()));
                 showMessage("Donation recorded successfully!", "success");
                 clearFields();
             } else {
@@ -51,12 +57,12 @@ public class DonateBloodController {
         }
     }
 
+    // Updates the blood inventory after successful donation
     private void updateInventory(Connection conn, String bloodGroup, int quantity) {
         try {
             String sql = "INSERT INTO inventory (blood_group, total_units) " +
-                        "VALUES (?, ?) ON DUPLICATE KEY UPDATE " +
-                        "total_units = total_units + ?";
-
+                    "VALUES (?, ?) ON DUPLICATE KEY UPDATE " +
+                    "total_units = total_units + ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, bloodGroup);
             stmt.setInt(2, quantity);
@@ -72,9 +78,10 @@ public class DonateBloodController {
         }
     }
 
+    // Validates required input fields before submission
     private boolean validateFields() {
         if (bloodGroupCombo.getValue() == null || bloodGroupCombo.getValue().isEmpty() ||
-            quantityField.getText().isEmpty() || locationField.getText().isEmpty()) {
+                quantityField.getText().isEmpty() || locationField.getText().isEmpty()) {
             showMessage("Please fill all required fields", "error");
             return false;
         }
@@ -93,12 +100,14 @@ public class DonateBloodController {
         return true;
     }
 
+    // Displays message in messageLabel with color based on type
     private void showMessage(String message, String type) {
         messageLabel.setText(message);
         messageLabel.setStyle(type.equals("success") ?
-            "-fx-text-fill: green;" : "-fx-text-fill: red;");
+                "-fx-text-fill: green;" : "-fx-text-fill: red;");
     }
 
+    // Clears all form fields after successful submission
     private void clearFields() {
         bloodGroupCombo.setValue(null);
         quantityField.clear();
@@ -106,6 +115,7 @@ public class DonateBloodController {
         remarksArea.clear();
     }
 
+    // Closes the form window without submission
     @FXML
     private void handleCancel() {
         ((Stage) bloodGroupCombo.getScene().getWindow()).close();
