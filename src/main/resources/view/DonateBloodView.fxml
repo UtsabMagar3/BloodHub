@@ -23,7 +23,7 @@
                style="-fx-font-weight: bold;"/>
         <ComboBox fx:id="bloodGroupCombo"
                   GridPane.rowIndex="0" GridPane.columnIndex="1"
-                  prefWidth="250">
+                  prefWidth="250" disable="true">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="A+"/>

@@ -16,11 +16,8 @@ import java.sql.ResultSet;
 
 public class HomeController {
 
-    private User loggedInUser;
-
     // Sets the logged-in user and stores it in session
     public void setUser(User user) {
-        this.loggedInUser = user;
         Session.setCurrentUser(user);
     }
 
@@ -88,7 +85,7 @@ public class HomeController {
         }
     }
 
-    // Clear session and redirect to login screen
+    // Clear session and redirect to lo gin screen
     @FXML
     private void handleLogout(javafx.event.ActionEvent event) {
         Session.setCurrentUser(null);

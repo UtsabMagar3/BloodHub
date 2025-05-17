@@ -5,7 +5,8 @@
 
 
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="controller.HomeController">
+            fx:controller="controller.HomeController"
+            prefWidth="1000" prefHeight="700">
     <top>
         <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #ffffff; -fx-padding: 10;">
             <Label text="BLOODHUB" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333333;" />

@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import model.User;
 import util.DatabaseConnection;
+import util.PasswordHasher;
 import util.Session;
 
 import java.sql.Connection;
@@ -31,13 +32,14 @@ public class LoginController {
             messageLabel.setText("Please enter both email and password.");
             return;
         }
+        String hashedPassword = PasswordHasher.hashPassword(password);
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(
                      "SELECT * FROM users WHERE email = ? AND password = ?")) {
 
             stmt.setString(1, email);  // Set email parameter in query
-            stmt.setString(2, password);  // Set password parameter in query
+            stmt.setString(2, hashedPassword);  // Set password parameter in query
             ResultSet rs = stmt.executeQuery();  // Execute query
 
             if (rs.next()) {  // If user found

@@ -1,17 +1,27 @@
 package controller;
 
 // Import JavaFX controls and utility classes
+
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import util.DatabaseConnection;
 import util.Session;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
 
+
 public class DonateBloodController {
+    @FXML
+    public void initialize() {
+        // Get current user's blood group from session
+        String userBloodGroup = Session.getCurrentUser().getBloodGroup();
+
+        // Set the blood group
+        bloodGroupCombo.setValue(userBloodGroup);
+        bloodGroupCombo.setDisable(true); // Keep it disabled but with a value
+    }
 
     // FXML components from the UI
     @FXML private ComboBox<String> bloodGroupCombo;

@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import util.DatabaseConnection;
+import util.PasswordHasher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,40 +24,68 @@ public class RegisterController {
     @FXML
     public void handleRegister(ActionEvent event) {
         // Get input values
-        String fullName = fullNameField.getText();
-        String email = emailField.getText();
+        String fullName = fullNameField.getText().trim();
+        String email = emailField.getText().trim();
         String password = passwordField.getText();
         String bloodGroup = bloodGroupComboBox.getValue();
         String gender = genderComboBox.getValue();
-        String phone = phoneField.getText();
-        String address = addressField.getText();
-        String dob = dobField.getText();
+        String phone = phoneField.getText().trim();
+        String address = addressField.getText().trim();
+        String dob = dobField.getText().trim();
 
         // Check if required fields are filled
-        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() || bloodGroup == null || gender == null) {
+        if (fullName.isEmpty() || email.isEmpty() || password.isEmpty() ||
+            bloodGroup == null || gender == null) {
             messageLabel.setText("Please fill in all required fields.");
             return;
         }
 
+        // Hash the password
+        String hashedPassword = PasswordHasher.hashPassword(password);
+
         // Attempt to register the user in the database
         try (Connection conn = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO users (full_name, email, password, phone, address, blood_group, date_of_birth, gender) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO users (full_name, email, password, phone, address, blood_group, date_of_birth, gender) " +
+                          "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setString(1, fullName);
                 stmt.setString(2, email);
-                stmt.setString(3, password);
+                stmt.setString(3, hashedPassword); // Store hashed password
                 stmt.setString(4, phone);
                 stmt.setString(5, address);
                 stmt.setString(6, bloodGroup);
                 stmt.setString(7, dob);
                 stmt.setString(8, gender);
-                stmt.executeUpdate();  // Execute the query to insert the user
-                messageLabel.setText("Registration successful.");
+
+                int result = stmt.executeUpdate();
+                if (result > 0) {
+                    messageLabel.setText("Registration successful.");
+                    // Clear fields after successful registration
+                    clearFields();
+                } else {
+                    messageLabel.setText("Registration failed.");
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();  // Log error
-            messageLabel.setText("Registration failed.");
+            if (e.getMessage().contains("Duplicate entry")) {
+                messageLabel.setText("Email already exists.");
+            } else {
+                e.printStackTrace();
+                messageLabel.setText("Registration failed: " + e.getMessage());
+            }
         }
+    }
+
+    // Helper method to clear form fields
+    private void clearFields() {
+        fullNameField.clear();
+        emailField.clear();
+        passwordField.clear();
+        phoneField.clear();
+        addressField.clear();
+        dobField.clear();
+        bloodGroupComboBox.setValue(null);
+        genderComboBox.setValue(null);
     }
 
     // Navigate to the login page

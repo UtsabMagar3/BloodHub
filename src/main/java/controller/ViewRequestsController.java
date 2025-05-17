@@ -44,7 +44,7 @@ public class ViewRequestsController {
         setupTableSorting(); // Enable sorting functionality for table columns
     }
 
-    // Setup the columns in the table
+    // Set up the columns in the table
     private void setupTableColumns() {
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         userColumn.setCellValueFactory(new PropertyValueFactory<>("requesterName"));
@@ -58,7 +58,7 @@ public class ViewRequestsController {
         setupActionsColumn(); // Set up the action buttons for approve/reject
     }
 
-    // Setup the action column (approve/reject buttons)
+    // Set up the action column (approve/reject buttons)
     private void setupActionsColumn() {
         actionsColumn.setCellFactory(column -> new TableCell<>() {
             private final Button approveBtn = new Button("Approve");

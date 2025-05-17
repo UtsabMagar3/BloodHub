@@ -149,29 +149,61 @@ public class ManageUsersController {
 
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
-                deleteUser(user);
+                try {
+                    deleteUser(user.getId());
+                    userList.remove(user);
+                    showAlert("Success", "User deleted successfully");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    showAlert("Error", "Failed to delete user");
+                }
             }
         });
     }
 
     // Delete user from database
-    private void deleteUser(User user) {
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement("DELETE FROM users WHERE id = ?")) {
+    private void deleteUser(int userId) throws Exception {
+        Connection conn = DatabaseConnection.getConnection();
+        conn.setAutoCommit(false); // Start transaction
 
-            stmt.setInt(1, user.getId());
-            int affected = stmt.executeUpdate();
+        try {
+            // Delete related requests first
+            PreparedStatement deleteRequests = conn.prepareStatement(
+                "DELETE FROM requests WHERE user_id = ?"
+            );
+            deleteRequests.setInt(1, userId);
+            deleteRequests.executeUpdate();
 
-            if (affected > 0) {
-                userList.remove(user);
-                showAlert("Success", "User deleted successfully");
-            }
+            // Delete related notifications
+            PreparedStatement deleteNotifications = conn.prepareStatement(
+                "DELETE FROM notifications WHERE user_id = ?"
+            );
+            deleteNotifications.setInt(1, userId);
+            deleteNotifications.executeUpdate();
+
+            // Delete related donations
+            PreparedStatement deleteDonations = conn.prepareStatement(
+                "DELETE FROM donations WHERE user_id = ?"
+            );
+            deleteDonations.setInt(1, userId);
+            deleteDonations.executeUpdate();
+
+            // Finally delete the user
+            PreparedStatement deleteUser = conn.prepareStatement(
+                "DELETE FROM users WHERE id = ?"
+            );
+            deleteUser.setInt(1, userId);
+            deleteUser.executeUpdate();
+
+            conn.commit(); // Commit transaction if all operations succeed
         } catch (Exception e) {
-            e.printStackTrace();
-            showAlert("Error", "Failed to delete user");
+            conn.rollback(); // Rollback on error
+            throw e;
+        } finally {
+            conn.setAutoCommit(true);
+            conn.close();
         }
     }
-
     // Handle back button action
     @FXML
     private void handleBack() {
