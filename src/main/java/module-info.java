@@ -10,4 +10,5 @@ module bloodhub {
     exports bloodhub;
     exports controller;
     exports model;
+    exports util;
 }
